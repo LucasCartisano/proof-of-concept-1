@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba comunicacion entre dominios</title>
+</head>
+<body>
+    <p>Peticion al dominio externo:</p>
+    <p id="respuesta"></p>
+
+    <br />
+    <br />
+  
+    <p>Datos Local Storage:</p>
+    <p id="localstorage"></p>
+    <script>
+        function mostrarDesdeLocalStorage() {
+            var respuestaDelServidor = localStorage.getItem("respuestaDelServidor");
+    
+            if (respuestaDelServidor !== null) {
+                document.getElementById("localstorage").textContent = respuestaDelServidor;
+            } else {
+                document.getElementById("localstorage").textContent = "No se encontró ninguna respuesta en localStorage";
+            }
+        }
+      
+        function hacerSolicitud() {
+            var xhr = new XMLHttpRequest();
+    
+            xhr.open("GET", "https://renappy.ole.agency/api/ver-token", true);
+    
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    localStorage.setItem("respuestaDelServidor", xhr.responseText);
+                    document.getElementById("respuesta").textContent = xhr.responseText;
+                } else {
+                    console.error("Error en la solicitud al servidor");
+                    document.getElementById("respuesta").textContent = "Error en la solicitud al servidor";
+                }
+
+                mostrarDesdeLocalStorage();
+            };
+            xhr.send();
+        }
+        hacerSolicitud();
+    </script>
+</body>
+</html>
